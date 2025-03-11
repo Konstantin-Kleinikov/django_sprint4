@@ -23,7 +23,6 @@ urlpatterns = [
     ),
     path(
         'posts/<int:post_id>/delete/',
-        #views.delete_post,
         views.PostDeleteView.as_view(),
         name='delete_post'
     ),
@@ -60,5 +59,5 @@ urlpatterns = [
     path('',
          views.index,
          name='index'
-    ),
+        ),
 ]
