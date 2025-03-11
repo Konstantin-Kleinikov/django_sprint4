@@ -237,6 +237,7 @@ class CommentMixin:
             kwargs={'post_id': self.comment.post.id}
         )
 
+
 class CommentCreateView(LoginRequiredMixin, CommentMixin, CreateView):
 
     def dispatch(self, request, *args, **kwargs):
@@ -245,7 +246,6 @@ class CommentCreateView(LoginRequiredMixin, CommentMixin, CreateView):
             pk=self.kwargs['comment_id']
         )
         return super().dispatch(request, *args, **kwargs)
-
 
     def form_valid(self, form):
         form.instance.post = self.post_instance
