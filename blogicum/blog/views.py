@@ -41,8 +41,8 @@ def post_detail(request, post_id: int):
 
     context = {
         'form': CommentForm(),
-        'comments': Comment.objects.select_related('post').filter(post=post_id),
-        'post': post
+        'post': post,
+        'comments': Comment.objects.select_related('post').filter(post=post_id)
     }
 
     return render(request, 'blog/detail.html', context)
@@ -166,10 +166,7 @@ class CommentCreateView(
     pk_url_kwarg = 'post_id'
 
     def form_valid(self, form):
-        form.instance.post = get_object_or_404(
-             Post,
-             pk=self.kwargs['post_id']
-         )
+        form.instance.post = get_object_or_404(Post, pk=self.kwargs['post_id'])
         form.instance.author = self.request.user
         return super().form_valid(form)
 
@@ -185,7 +182,6 @@ class CommentUpdateView(
         return get_object_or_404(Comment, pk=self.kwargs['comment_id'])
 
     def form_valid(self, form):
-        #form.instance.id = self.comment.id
         form.instance.author = self.request.user
         return super().form_valid(form)
 

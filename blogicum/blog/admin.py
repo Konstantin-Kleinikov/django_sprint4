@@ -96,6 +96,7 @@ class PostAdmin(admin.ModelAdmin):
         'is_published'
     )
 
+
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = (

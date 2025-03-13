@@ -28,11 +28,11 @@ def get_filtered_posts(
     if all_posts:
         queryset = queryset.exclude(
             ~Q(author=request.user.id)
-            &
-            (Q(is_published=False)
-             | Q(category__is_published=False)
-             | Q(pub_date__gt=timezone.now())
-             )
+            & (
+                Q(is_published=False)
+                | Q(category__is_published=False)
+                | Q(pub_date__gt=timezone.now())
+            )
         )
     else:
         queryset = queryset.filter(
