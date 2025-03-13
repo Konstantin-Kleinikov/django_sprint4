@@ -1,6 +1,6 @@
 """Модуль с формами для приложения blog."""
-from django.contrib.auth import get_user_model
 from django import forms
+from django.contrib.auth import get_user_model
 
 from .models import Comment, Post
 
@@ -8,7 +8,6 @@ User = get_user_model()
 
 
 class CommentForm(forms.ModelForm):
-
     class Meta:
         model = Comment
         fields = ['text', ]
@@ -26,5 +25,18 @@ class EditProfileForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'text', 'pub_date', 'category', 'location', 'image']
-        widgets = {'pub_date': forms.DateInput(attrs={'type': 'date'})}
+        fields = [
+            'title',
+            'text',
+            'is_published',
+            'pub_date',
+            'category',
+            'location',
+            'image'
+        ]
+        widgets = {
+            'pub_date': forms.DateTimeInput(
+                format='%Y-%m-%dT%H:%M:%S',
+                attrs={'type': 'datetime-local'}
+            )
+        }
