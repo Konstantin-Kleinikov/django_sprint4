@@ -4,6 +4,7 @@ from django.db import models
 from django.urls import reverse
 
 from core.models import CreatedPublishedModel, TitleModel
+
 from .constants import NAME_DISPLAY_LENGTH
 
 User = get_user_model()
@@ -51,7 +52,6 @@ class Post(TitleModel):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='posts',
         verbose_name='Автор публикации',
     )
     location = models.ForeignKey(
@@ -59,14 +59,12 @@ class Post(TitleModel):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='posts',
         verbose_name='Местоположение',
     )
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
         null=True,
-        related_name='posts',
         verbose_name='Категория',
     )
     image = models.ImageField(
@@ -76,8 +74,8 @@ class Post(TitleModel):
     )
 
     class Meta:
-        ordering = ["-pub_date"]
         default_related_name = 'posts'
+        ordering = ["-pub_date"]
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
 
@@ -93,20 +91,19 @@ class Comment(CreatedPublishedModel):
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
-        related_name='comments',
         verbose_name='Публикация'
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='comments',
         verbose_name='Автор публикации'
     )
 
     class Meta:
+        default_related_name = 'comments'
+        ordering = ['created_at']
         verbose_name = 'комментарий'
         verbose_name_plural = 'Комментарии'
-        ordering = ['created_at']
 
     def __str__(self):
         return self.text[:NAME_DISPLAY_LENGTH]

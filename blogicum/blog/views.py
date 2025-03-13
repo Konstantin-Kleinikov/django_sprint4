@@ -3,12 +3,12 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView, DeleteView, UpdateView
 
 from .forms import CommentForm, EditProfileForm, PostForm
-from .mixins import CommentMixin, OnlyAuthorMixin, PostMixin
+from .mixins import CommentMixin, OnlyAuthorMixin, PostDispatchMixin, PostMixin
 from .models import Category, Comment, Post
 from .service import get_filtered_posts, get_paginated_posts
 
@@ -42,7 +42,7 @@ def post_detail(request, post_id: int):
     context = {
         'form': CommentForm(),
         'post': post,
-        'comments': Comment.objects.select_related('post').filter(post=post_id)
+        'comments': post.comments.select_related('post')
     }
 
     return render(request, 'blog/detail.html', context)
@@ -112,7 +112,7 @@ class PostCreateView(
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy(
+        return reverse(
             'blog:profile',
             kwargs={'username': self.object.author.username}
         )
@@ -120,19 +120,11 @@ class PostCreateView(
 
 class PostUpdateView(
     LoginRequiredMixin,
+    PostDispatchMixin,
     PostMixin,
     UpdateView
 ):
     pk_url_kwarg = 'post_id'
-
-    def dispatch(self, request, *args, **kwargs):
-        self.post_instance = self.get_object()
-        if self.post_instance.author != self.request.user:
-            return redirect(
-                'blog:post_detail',
-                post_id=self.post_instance.id
-            )
-        return super().dispatch(request, *args, **kwargs)
 
 
 class PostDeleteView(
@@ -177,13 +169,7 @@ class CommentUpdateView(
     CommentMixin,
     UpdateView
 ):
-
-    def get_object(self, queryset=None):
-        return get_object_or_404(Comment, pk=self.kwargs['comment_id'])
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
+    pk_url_kwarg = 'comment_id'
 
 
 class CommentDeleteView(

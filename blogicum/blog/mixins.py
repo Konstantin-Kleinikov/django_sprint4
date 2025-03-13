@@ -1,9 +1,10 @@
 """Миксины для приложения blog."""
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.shortcuts import redirect
 from django.urls import reverse
 
-from .forms import PostForm, CommentForm
-from .models import Post, Comment
+from .forms import CommentForm, PostForm
+from .models import Comment, Post
 
 
 class OnlyAuthorMixin(UserPassesTestMixin):
@@ -16,6 +17,17 @@ class PostMixin:
     model = Post
     form_class = PostForm
     template_name = 'blog/create.html'
+
+
+class PostDispatchMixin:
+    def dispatch(self, request, *args, **kwargs):
+        self.post_instance = self.get_object()
+        if self.post_instance.author != self.request.user:
+            return redirect(
+                'blog:post_detail',
+                post_id=self.post_instance.id
+            )
+        return super().dispatch(request, *args, **kwargs)
 
 
 class CommentMixin:

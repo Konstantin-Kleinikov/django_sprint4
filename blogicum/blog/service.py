@@ -1,8 +1,8 @@
 """Вспомогательные функции для приложения blog."""
 from typing import Any
 
-from django.core.paginator import Paginator, Page
-from django.db.models import QuerySet, Count, Q
+from django.core.paginator import Page, Paginator
+from django.db.models import Count, Q, QuerySet
 from django.utils import timezone
 
 from .constants import NUM_OF_POSTS_PER_PAGE

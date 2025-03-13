@@ -1,6 +1,5 @@
 from pathlib import Path
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-_u59-4o@&28@1y4l(!##ahb(clo=in^d*8xyaut3ri52bfdv!z'
@@ -104,6 +103,8 @@ INTERNAL_IPS = [
 ]
 
 LOGIN_REDIRECT_URL = 'blog:index'
+
+LOGIN_URL = '/auth/login/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
