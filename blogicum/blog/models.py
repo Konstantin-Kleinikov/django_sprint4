@@ -4,7 +4,6 @@ from django.db import models
 from django.urls import reverse
 
 from core.models import CreatedPublishedModel, TitleModel
-
 from .constants import NAME_DISPLAY_LENGTH
 
 User = get_user_model()
